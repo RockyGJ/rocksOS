@@ -44,6 +44,7 @@ typedef struct {
 
 static os_task_admin_t os_task_admin[OS_MAXIMUM_TASKS];
 static os_task_id_t os_latest_added_task;
+static os_task_id_t task_running;
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -72,6 +73,7 @@ os_return_codes_t os_task_init(void) {
 	}
 	//Clear the variable
 	os_latest_added_task = 0;
+	task_running = OS_MAXIMUM_TASKS;
 	//Init is successful
 	returnValue = os_init_succeed;
 	return returnValue;
@@ -84,6 +86,10 @@ os_return_codes_t os_task_init(void) {
  */
 int os_add_task(os_task_t new_task) {
 	if (os_task_admin[os_latest_added_task].task.task_cb == NULL) {
+		//Every event is auto subscribed to the os_event_init
+		os_task_admin[os_latest_added_task].event_subscribe[os_event_init] =
+				true;
+		//Add task to the table
 		os_task_admin[os_latest_added_task++].task = new_task;
 		if (os_latest_added_task >= OS_MAXIMUM_TASKS) {
 			os_log(os_log_level_error, "Error on adding task");
@@ -99,12 +105,48 @@ int os_add_task(os_task_t new_task) {
 }
 
 /**
- * register a task id for a os event
- * @param  event   event to register
- * @param  task_id task id which want to register to the event
- * @return         returns 0 if it was not possible to register for the event
+ * subscribe a task id for a os event
+ * @param  event   event to subscribed
+ * @param  task_id task id which want to subscribe to the event
+ * @return         returns 0 if it was not possible to subscribe for the event
  */
-int os_register_for_event(os_event_t event, os_task_id_t task_id){
+int os_subscribe_for_event(os_event_t event, os_task_id_t task_id) {
 	os_task_admin[task_id].event_subscribe[event] = true;
-	return 0;
+	return 1;
+}
+
+/**
+ *	return the running task id
+ * @return
+ */
+extern os_task_id_t os_current_task_id(void){
+	return task_running;
+}
+
+
+/**
+ * run a task with a given event
+ * @param task_id
+ * @param event
+ * @return the task return code
+ */
+os_task_return_codes_t os_run_task(os_task_id_t task_id, os_event_t event) {
+	//Check if task id registered for the event
+	if (os_task_admin[task_id].event_subscribe[event]) {
+		if (os_task_admin[task_id].task.task_cb != NULL) {
+			task_running = os_task_admin[task_id].this;
+			return os_task_admin[task_id].task.task_cb(event);
+		} else {
+			return os_task_failed;
+		}
+	} else {
+		return os_task_not_registerd;
+	}
+}
+
+/**
+ * return the number of task
+ */
+os_task_id_t os_nmbr_of_tasks(void){
+	return os_latest_added_task;
 }
