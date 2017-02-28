@@ -5,7 +5,7 @@
  * Web:    www.gertjanrocks.com
  * Mail:   gertjanrocks@outlook.com
  * -----------------------------------------------------------------------------
- * Description: 
+ * Description:
  * -----------------------------------------------------------------------------
  * Created on: Feb 23, 2017
  * -----------------------------------------------------------------------------
@@ -81,17 +81,15 @@ void os_queue_add(os_queue_t *queue, const void* element) {
  * remove element from queue
  * @param queue
  */
-void* os_queue_remove(os_queue_t *queue) {
-	void *value;
+void os_queue_remove(os_queue_t *queue, void* element) {
 
 	if (queue->currentSize > 0) {
-		value = queue->buffer + queue->out * queue->elementSize;
+		(void) memcpy(element, queue->buffer + queue->out * queue->elementSize,
+				queue->elementSize);
 		--queue->currentSize;
 		++queue->out;
 		queue->out %= queue->capacity;
 	}
-
-	return value;
 }
 
 /**
@@ -122,7 +120,6 @@ bool os_queue_isFull(os_queue_t *queue) {
 	full = queue->currentSize == queue->capacity;
 	return full;
 }
-
 
 /**
  * return true is queue is empty

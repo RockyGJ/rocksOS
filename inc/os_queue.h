@@ -76,7 +76,7 @@ void os_queue_add(os_queue_t *queue, const void* element);
  * @param queue
  * @return the first item available from the queue
  */
-void* os_queue_remove(os_queue_t *queue);
+void os_queue_remove(os_queue_t *queue, void* element);
 
 /**
  * return the current size of the queue
