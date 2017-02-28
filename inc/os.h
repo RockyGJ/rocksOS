@@ -43,14 +43,14 @@ typedef enum {
 typedef enum {
 	os_task_succeed, //! The called task is succeed and only needs be to called when necessery
 	os_task_failed,          //! The called task has failed stop running
-	os_task_rerun            //! The called task needs to run again
+	os_task_rerun,            //! The called task needs to run again
+	os_task_not_registerd		//!The task is not registered for the event
 } os_task_return_codes_t;
 
 /**
  * Event priorities
  */
 typedef enum {
-	os_msg_priority_irq,        //! Message is send from a IRQ context
 	os_msg_priority_high,		//! Message has a high priority
 	os_msg_priority_normal,		//! Message has a normal priority
 	os_msg_priority_low,		//! Message has a low priority
@@ -130,7 +130,7 @@ extern os_task_id_t os_current_task_id(void);
  * @param  task_id task id which want to register to the event
  * @return         returns 0 if it was not possible to register for the event
  */
-extern int os_register_for_event(os_event_t event, os_task_id_t task_id);
+extern int os_subscribe_for_event(os_event_t event, os_task_id_t task_id);
 
 /**
  * Let the active task sleep for a minimum of sleep_ms the os main function
@@ -154,6 +154,19 @@ extern int os_sleep(uint32_t sleep_ms);
  * @return              return 0 if it was not possible to post msg
  */
 extern int os_post_msg(os_msg_t msg, os_task_id_t dest_task_id,
+		os_msg_priority_t prio);
+
+/**
+ * post a message to another task. The task id of the destination is nevessery
+ * to succsesful post the msg
+ *
+ * This function is same as post message but cann be called from of the interrupt
+ * @param  msg
+ * @param  dest_task_id
+ * @param  prio
+ * @return              return 0 if it was not possible to post msg
+ */
+extern int os_post_msg_from_irq(os_msg_t msg, os_task_id_t dest_task_id,
 		os_msg_priority_t prio);
 
 /**
