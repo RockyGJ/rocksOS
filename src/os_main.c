@@ -15,6 +15,8 @@
  * Include files *
  * --------------*
  */
+#include "stdio.h"
+
 #include "os.h"
 #include "os_settings.h"
 #include "os_private.h"
@@ -33,7 +35,13 @@
  * File-scope variables *
  * ---------------------*
  */
-bool os_error;
+//Public for OS
+os_functions_pointers_t* os_functions_pointer;
+
+//Private
+static bool os_error;
+static bool os_functions_done = false;
+
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -45,7 +53,7 @@ bool os_error;
  */
 
 /**
- * Function will initialize every necessery things for the os
+ * Function will initialize every necessary things for the os
  * @return
  */
 os_return_codes_t os_init(void) {
@@ -69,17 +77,87 @@ os_return_codes_t os_init(void) {
 	return os_returnValue;
 }
 
+/**
+ * main function for the os should only return on a error
+ * @return
+ */
 int os_main(void) {
-	if(!os_error){
-		//Check if message is pending
-		os_log(os_log_level_os, "Test loggin %d %d\n\r",200,200);
+	os_task_id_t task_id;
+	os_task_return_codes_t returnValue;
 
+	//Check functions pointers
+	if(!os_functions_done){
+		os_set_error();
+		os_log(os_log_level_os, "Error functions pointers not done\n\r");
+	}
+
+	//init all the task
+	if(!os_error){
+		for (task_id = 0; task_id < os_nmbr_of_tasks(); task_id++){
+			os_log(os_log_level_os, "Send init to %d\n\r",task_id);
+			returnValue = os_run_task(task_id,os_event_init);
+
+		}
+	}
+	//Run the OS while main loop until an error occurs
+	while(!os_error){
+		//Check if message is pending
+		task_id = os_msg_pending();
+		//Check if message is valid
+		if(task_id < OS_MAXIMUM_TASKS){
+			os_log(os_log_level_os, "Message pending for %d\n\r",task_id);
+			returnValue = os_run_task(task_id, os_event_msg_pending);
+			if(returnValue == os_task_failed){
+				os_log(os_log_level_os, "Error on message pending for %d\n\r",task_id);
+			}
+		}
 		//Check if task are registered for the message event
 
 		//Check if task is registered for idle event
 	}
+	return os_failed;
 }
 
+/**
+ * Set the OS error on true
+ */
 void os_set_error(void) {
 	os_error = true;
+	os_log(os_log_level_all, "Error reported for OS!!\n\rt");
+}
+
+
+/**
+ * add the necessary functions pointers to the os
+ * @param os_functions
+ * @return
+ */
+os_return_codes_t os_add_function_pointers(os_functions_pointers_t* os_functions){
+	os_return_codes_t os_returnValue = os_init_succeed;
+	//Check the necessary functions
+
+	os_functions_pointer = os_functions;
+	//Check disable irq function
+	if (os_returnValue == os_init_succeed) {
+		if (os_functions_pointer->disable_irq == NULL) {
+			os_returnValue = os_init_failed;
+		}
+	}
+	//Check enable irq function
+	if (os_returnValue == os_init_succeed) {
+		if (os_functions_pointer->enable_irq == NULL) {
+			os_returnValue = os_init_failed;
+		}
+	}
+	//Check disable irq function
+	if (os_returnValue == os_init_succeed) {
+		if (os_functions_pointer->stdio == NULL) {
+			os_returnValue = os_init_failed;
+		}
+	}
+
+	if(os_returnValue == os_init_succeed){
+		os_functions_done = true;
+	}
+	return os_returnValue;
 }

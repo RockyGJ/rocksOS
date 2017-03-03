@@ -137,7 +137,10 @@ int os_post_msg(os_msg_t msg, os_task_id_t dest_task_id,
 	os_msg_queue_entry_t new_entry;
 	new_entry.msg = msg;
 	new_entry.destination = dest_task_id;
-
+	//Disable irq
+	os_functions_pointer->disable_irq();
 	os_queue_add(&os_msg_buffer[prio].queue, &new_entry);
+	//Enable irq
+	os_functions_pointer->enable_irq();
 	return 0;
 }

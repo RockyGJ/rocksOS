@@ -36,6 +36,7 @@
  * ---------------------*
  */
 
+extern os_functions_pointers_t* os_functions_pointer;
  
 /* ----------------------*
  * Function declarations *

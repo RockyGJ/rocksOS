@@ -34,16 +34,19 @@
  * os return codes
  */
 typedef enum {
-	os_failed = -2, os_init_failed, os_init_succeed, os_succesful
+	os_failed = -2,
+	os_init_failed,
+	os_init_succeed,
+	os_succesful
 } os_return_codes_t;
 
 /**
  * return function for a called task
  */
 typedef enum {
-	os_task_succeed, //! The called task is succeed and only needs be to called when necessery
-	os_task_failed,          //! The called task has failed stop running
-	os_task_rerun,            //! The called task needs to run again
+	os_task_succeed, //! The called task is succeed and only needs be to called when necessary
+	os_task_failed,          	//! The called task has failed stop running
+	os_task_rerun,            	//! The called task needs to run again
 	os_task_not_registerd		//!The task is not registered for the event
 } os_task_return_codes_t;
 
@@ -69,11 +72,9 @@ typedef enum {
 	os_nmbr_of_events
 } os_event_t;
 
-typedef enum{
-	os_log_level_all,
-	os_log_level_error,
-	os_log_level_os,
-}os_log_level_t;
+typedef enum {
+	os_log_level_all, os_log_level_error, os_log_level_os,
+} os_log_level_t;
 
 /**
  * a os message object containing a message id and data union field
@@ -97,11 +98,11 @@ typedef uint16_t os_task_id_t;  //! The task id assigned to a tasks
  * The functions pointers below must assigned before running main
  *---------------------------------------------------------------
  */
-//struct {
-//(void *) enable_irq;
-//(void *) disable_irq;
-//(void *) stdo;
-//} os_functions_pointers;
+typedef struct {
+	void (*enable_irq)(void);
+	void (*disable_irq)(void);
+	void (*stdio)(void);
+} os_functions_pointers_t;
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -198,5 +199,12 @@ extern os_return_codes_t os_init(void);
  * @return
  */
 extern os_return_codes_t os_main(void);
+
+/**
+ * add the necessery os functions pointers
+ * @param os_functions
+ * @return
+ */
+extern os_return_codes_t os_add_function_pointers(os_functions_pointers_t* os_functions);
 
 #endif /* OS_H_ */
