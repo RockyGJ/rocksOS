@@ -90,10 +90,7 @@ typedef struct {
 } os_task_t;
 
 typedef uint16_t os_task_id_t;  //! The task id assigned to a tasks
-/* ---------------------*
- * File-scope variables *
- * ---------------------*
- */
+
 /**--------------------------------------------------------------
  * The functions pointers below must assigned before running main
  *---------------------------------------------------------------
@@ -103,6 +100,13 @@ typedef struct {
 	void (*disable_irq)(void);
 	void (*stdio)(void);
 } os_functions_pointers_t;
+
+/* ---------------------*
+ * File-scope variables *
+ * ---------------------*
+ */
+
+
 /* ----------------------*
  * Function declarations *
  * ----------------------*

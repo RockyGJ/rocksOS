@@ -82,6 +82,7 @@ os_return_codes_t os_init(void) {
  * @return
  */
 int os_main(void) {
+	static os_task_id_t last_checked_task_id;
 	os_task_id_t task_id;
 	os_task_return_codes_t returnValue;
 
@@ -111,9 +112,18 @@ int os_main(void) {
 				os_log(os_log_level_os, "Error on message pending for %d\n\r",task_id);
 			}
 		}
-		//Check if task are registered for the message event
 
-		//Check if task is registered for idle event
+		//Cycle trough task for the idle event
+		if(last_checked_task_id < os_nmbr_of_tasks()){
+			last_checked_task_id++;
+		} else {
+			last_checked_task_id = 0;
+		}
+		//Set function to check and run if necessary
+		returnValue = os_run_task(last_checked_task_id, os_event_idle);
+		if(returnValue == os_task_failed){
+			os_log(os_log_level_os, "Error on idle for %d\n\r",task_id);
+		}
 	}
 	return os_failed;
 }
