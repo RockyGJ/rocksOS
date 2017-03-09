@@ -25,8 +25,18 @@
  * -------------------------------*
  */
 
-#define OS_MSG_QUEUE_SIZE	(32)
-#define OS_MAXIMUM_TASKS	(32)
+/** OS Settings **/
+#define OS_USE_TIMERS		//! Disable timers to save memory
+
+
+/** SIZE settings **/
+#define OS_MAXIMUM_TASKS	(32)		//! Maximum number of tasks
+
+#define OS_MSG_QUEUE_SIZE	(32)		//! Size of the message queue for each prio
+
+#ifdef OS_USE_TIMERS
+	#define OS_MAXIMUM_TIMERS	(32)	//! Number of availble timers
+#endif /* OS_USE_TIMERS */
 /* -----------------*
  * Type definitions *
  * -----------------*

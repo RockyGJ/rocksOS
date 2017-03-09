@@ -137,14 +137,6 @@ extern os_task_id_t os_current_task_id(void);
  */
 extern int os_subscribe_for_event(os_event_t event, os_task_id_t task_id);
 
-/**
- * Let the active task sleep for a minimum of sleep_ms the os main function
- * will schedule other tasks when this function is called
- * @param  sleep_ms sleep time in  milliseconds
- * @return          return 0 if sleep is succeed or the number of milliseconds
- *                  to go when interrupt
- */
-extern int os_sleep(uint32_t sleep_ms);
 
 /*********************************
  *      Message functions        *
@@ -210,5 +202,17 @@ extern os_return_codes_t os_main(void);
  * @return
  */
 extern os_return_codes_t os_add_function_pointers(os_functions_pointers_t* os_functions);
+
+#ifdef OS_COOPERATIVE_MULTITASKING
+/**
+ * Let the active task sleep for a minimum of sleep_ms the os main function
+ * will schedule other tasks when this function is called
+ * @param  sleep_ms sleep time in  milliseconds
+ * @return          return 0 if sleep is succeed or the number of milliseconds
+ *                  to go when interrupt
+ */
+extern int os_sleep(uint32_t sleep_ms);
+
+#endif /* OS_COOPERATIVE_MULTITASKING */
 
 #endif /* OS_H_ */
