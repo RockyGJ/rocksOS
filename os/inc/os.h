@@ -34,10 +34,10 @@
  * os return codes
  */
 typedef enum {
-	os_failed = -2,
-	os_init_failed,
-	os_init_succeed,
-	os_succesful
+	os_failed = -2,				//! Os has failed os should stop working
+	os_init_failed,				//! Init has failed os should not start
+	os_init_succeed,			//! Init is succsesful os will start
+	os_succesful					//! Return never
 } os_return_codes_t;
 
 /**
@@ -46,7 +46,6 @@ typedef enum {
 typedef enum {
 	os_task_succeed, //! The called task is succeed and only needs be to called when necessary
 	os_task_failed,          	//! The called task has failed stop running
-	os_task_rerun,            	//! The called task needs to run again
 	os_task_not_registerd		//!The task is not registered for the event
 } os_task_return_codes_t;
 
@@ -66,24 +65,36 @@ typedef enum {
  */
 typedef enum {
 	os_event_msg_pending, //! Message is pending
-	os_event_init,
-	os_event_idle,
+	os_event_init,				//! Os is started and calls each task one time on init
+	os_event_idle,				//! No messages and if activated timer events are pending
+
+#ifdef OS_USE_TIMERS
+	os_event_timer,
+#endif /* OS_USE_TIMERS */
 
 	os_nmbr_of_events
 } os_event_t;
 
+/**
+ * All possible log levels
+ */
 typedef enum {
-	os_log_level_all, os_log_level_error, os_log_level_os,
+	os_log_level_all,	//! Will be outputed when in all log levels
+	os_log_level_error, //! Will be outputed when error log is active
+	os_log_level_os, //! Will be outputed when os log is active
 } os_log_level_t;
 
 /**
  * a os message object containing a message id and data union field
  */
 typedef struct {
-	uint32_t os_msg_id;
-	uint32_t data;
+	uint32_t os_msg_id;	//! Message ID of the message
+	uint32_t data;			//! Data along with the message
 } os_msg_t;
 
+/**
+ * A task entry, used to register a task
+ */
 typedef struct {
 	const char* task_name;
 	os_task_return_codes_t (*task_cb)(os_event_t);
@@ -91,9 +102,26 @@ typedef struct {
 
 typedef uint16_t os_task_id_t;  //! The task id assigned to a tasks
 
-/**--------------------------------------------------------------
+#ifdef OS_USE_TIMERS
+
+/**
+ * Differnt timer types
+ */
+typedef enum {
+	os_timer_repeat,	//! Timer will auto restart after timer was ended
+	os_timer_one_shot //! Timer needs a start command after finishing
+} os_timer_type_t;
+
+/**
+ * Timer ID used for timer functions
+ */
+typedef uint16_t os_timer_id_t;
+
+#endif /* OS_USE_TIMERS */
+
+
+/**
  * The functions pointers below must assigned before running main
- *---------------------------------------------------------------
  */
 typedef struct {
 	void (*enable_irq)(void);
@@ -173,6 +201,36 @@ extern int os_post_msg_from_irq(os_msg_t msg, os_task_id_t dest_task_id,
  * @return      return 0 if call was made without a msg pending or event msg pending
  */
 extern int os_retrieve_msg(os_msg_t *msg);
+
+/*********************************
+ *      Timer functions        *
+ *********************************/
+
+#ifdef OS_USE_TIMERS
+/**
+ * Must be called every millisecond to count
+ */
+extern void os_timer_count(void) ;
+/**
+ * Add a timer with default settings. The function will return a unique timer ID which can be used to
+ * start or stop the timer
+ * @param timer_value_ms
+ * @param timer_type
+ * @return
+ */
+extern os_timer_id_t os_timer_add(uint32_t timer_value_ms, os_timer_type_t timer_type);
+/**
+ * Stop a timer. A timer can be stoped even when not running
+ * @param timer_id
+ */
+extern void os_timer_stop(os_timer_id_t timer_id);
+/**
+ * Start or restart the timer
+ * @param timer_id
+ */
+extern void os_timer_start(os_timer_id_t timer_id);
+
+#endif /* OS_USE_TIMERS */
 
 /*********************************
  *           OS functions        *

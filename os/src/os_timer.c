@@ -31,12 +31,6 @@
  * -----------------*
  */
 
-typedef enum {
-	os_timer_repeat, os_timer_one_shot
-} os_timer_type_t;
-
-typedef uint16_t os_timer_id_t;
-
 typedef struct {
 	uint64_t start_value;
 	uint32_t value;
@@ -49,8 +43,11 @@ typedef struct {
  * File-scope variables *
  * ---------------------*
  */
-
+//Timer entries
 static os_timer_entry_t os_timers[OS_MAXIMUM_TIMERS];
+//Queue to store the pending task_ids
+static os_task_id_t	os_timer_pending_queue_buffer[OS_MAXIMUM_TIMERS];
+static os_queue_t os_timer_pending_queue;
 
 //unsigned 64 bit timer @ 1 milliseconds can overflow in 584942417 years! Take care of this!
 static uint64_t os_timer_counter;
@@ -69,6 +66,7 @@ static uint64_t os_timer_counter;
  * @return  os_init_succeed if succeed
  */
 os_return_codes_t os_timer_init(void) {
+	os_return_codes_t returnValue = os_init_succeed;
 	//Clear os timer counter
 	//Start at one so zero can be used to disable timer
 	os_timer_counter = 1;
@@ -79,8 +77,11 @@ os_return_codes_t os_timer_init(void) {
 		os_timers[id].value = 0;
 		os_timers[id].used = false;
 	}
-
-	return os_init_succeed;
+	//Init the timer pending queue
+	returnValue = os_queue_init(&os_timer_pending_queue, &os_timer_pending_queue_buffer,
+		 (sizeof(os_timer_pending_queue_buffer)	/ sizeof(os_timer_pending_queue_buffer[0])),
+		 sizeof(os_timer_pending_queue_buffer[0]));
+	return returnValue;
 }
 
 /**
@@ -168,7 +169,8 @@ void os_timer_check_timers(void) {
 		if((os_timers[id].used) && (os_timers[id].start_value > 0)){
 			//Check if timer has occurred
 			if((os_timers[id].start_value + os_timers[id].value) >= os_timer_counter){
-				//TODO add timer id to QEUEU or something
+				//Add the timer to the timer queue
+				os_queue_add(&os_timer_pending_queue, os_timers[id].task_id);
 				if(os_timers[id].type == os_timer_repeat){
 					os_timer_start(id);
 				} else {
@@ -179,7 +181,18 @@ void os_timer_check_timers(void) {
 	}
 }
 
+/**
+ * Theis functions can be called to check is a timer is pending
+ * @return  task id of pending timer
+ */
 os_task_id_t os_timer_pending(void) {
-
+	os_task_id_t pending_task;
+	//Check if the queue is not empty
+	if (!os_queue_isEmpty(&os_timer_pending_queue)) {
+		//Get the task id from the queue
+		os_queue_remove(&os_timer_pending_queue, &pending_task);
+	}
+	return pending_task;
 }
+
 #endif /* OS_USE_TIMERS */

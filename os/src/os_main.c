@@ -74,6 +74,15 @@ os_return_codes_t os_init(void) {
 			os_log(os_log_level_error, "Error on task initialize");
 		}
 	}
+	#ifdef OS_USE_TIMERS
+	//Init the timer layer
+	if (os_returnValue == os_init_succeed) {
+		if (os_timer_init() != os_init_succeed) {
+			os_returnValue = os_init_failed;
+			os_log(os_log_level_error, "Error on timer initialize");
+		}
+	}
+	#endif /* OS_USE_TIMERS */
 	return os_returnValue;
 }
 
@@ -112,6 +121,21 @@ int os_main(void) {
 				os_log(os_log_level_os, "Error on message pending for %d\n\r",task_id);
 			}
 		}
+
+		#ifdef OS_USE_TIMERS
+		//Check all timers
+		os_timer_check_timers();
+		//Check if timer task id is pending
+		task_id = os_timer_pending();
+		//If task id pending run task
+		if(task_id < OS_MAXIMUM_TASKS){
+			os_log(os_log_level_os, "Timer event for %d\n\r",task_id);
+			returnValue = os_run_task(task_id, os_event_timer);
+			if(returnValue == os_task_failed){
+				os_log(os_log_level_os, "Error on timer event for %d\n\r",task_id);
+			}
+		}
+		#endif OS_USE_TIMERS
 
 		//Cycle trough task for the idle event
 		if(last_checked_task_id < os_nmbr_of_tasks()){
