@@ -37,7 +37,7 @@ void stdio_function(void);
 void* Thread(void *arg){
 	while (1) {
 		os_timer_count();
-		sleep(10);
+		usleep(10000);
 	}
 }
 

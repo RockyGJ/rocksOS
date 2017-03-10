@@ -183,11 +183,13 @@ void os_timer_check_timers(void) {
 }
 
 /**
- * Theis functions can be called to check is a timer is pending
+ * This functions can be called to check is a timer is pending
  * @return  task id of pending timer
  */
 os_task_id_t os_timer_pending(void) {
 	os_task_id_t pending_task;
+	//Set task is to max
+	pending_task = OS_MAXIMUM_TASKS;
 	//Check if the queue is not empty
 	if (!os_queue_isEmpty(&os_timer_pending_queue)) {
 		//Get the task id from the queue
