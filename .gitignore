@@ -6,3 +6,11 @@ Debug/
 \.project
 
 \.settings/language\.settings\.xml
+
+\.metadata/
+
+examples/\.settings/language\.settings\.xml
+
+os/\.settings/language\.settings\.xml
+
+os/\.settings/org\.eclipse\.cdt\.managedbuilder\.core\.prefs
