@@ -20,6 +20,7 @@
  */
 #include "stdint.h"
 #include "stdbool.h"
+#include "os_settings.h"
 /* -------------------------------*
  * Constant and macro definitions *
  * -------------------------------*

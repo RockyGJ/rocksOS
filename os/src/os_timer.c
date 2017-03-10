@@ -19,6 +19,7 @@
 #include "os.h"
 #include "os_settings.h"
 #include "os_private.h"
+#include "os_queue.h"
 
 #ifdef OS_USE_TIMERS
 /* -------------------------------*
@@ -78,7 +79,7 @@ os_return_codes_t os_timer_init(void) {
 		os_timers[id].used = false;
 	}
 	//Init the timer pending queue
-	returnValue = os_queue_init(&os_timer_pending_queue, &os_timer_pending_queue_buffer,
+	os_queue_init(&os_timer_pending_queue, &os_timer_pending_queue_buffer,
 		 (sizeof(os_timer_pending_queue_buffer)	/ sizeof(os_timer_pending_queue_buffer[0])),
 		 sizeof(os_timer_pending_queue_buffer[0]));
 	return returnValue;
@@ -170,7 +171,7 @@ void os_timer_check_timers(void) {
 			//Check if timer has occurred
 			if((os_timers[id].start_value + os_timers[id].value) >= os_timer_counter){
 				//Add the timer to the timer queue
-				os_queue_add(&os_timer_pending_queue, os_timers[id].task_id);
+				os_queue_add(&os_timer_pending_queue, &os_timers[id].task_id);
 				if(os_timers[id].type == os_timer_repeat){
 					os_timer_start(id);
 				} else {

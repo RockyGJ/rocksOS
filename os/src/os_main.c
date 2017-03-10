@@ -135,7 +135,7 @@ int os_main(void) {
 				os_log(os_log_level_os, "Error on timer event for %d\n\r",task_id);
 			}
 		}
-		#endif OS_USE_TIMERS
+		#endif /* OS_USE_TIMERS */
 
 		//Cycle trough task for the idle event
 		if(last_checked_task_id < os_nmbr_of_tasks()){

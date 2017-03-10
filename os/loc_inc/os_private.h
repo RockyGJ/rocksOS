@@ -66,5 +66,6 @@ extern void os_timer_check_timers(void) ;
  * @return  task id of pending timer
  */
 extern os_task_id_t os_timer_pending(void);
-#endif OS_USE_TIMERS
+#endif /* OS_USE_TIMERS */
+
 #endif /* OS_PRIVATE_H_ */
