@@ -14,6 +14,10 @@
 #ifndef OS_QUEUE_H_
 #define OS_QUEUE_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* --------------*
  * Include files *
  * --------------*
@@ -106,7 +110,9 @@ bool os_queue_isFull(os_queue_t *queue);
  */
 bool os_queue_isEmpty(os_queue_t *queue);
 
-
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* OS_QUEUE_H_ */

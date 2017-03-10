@@ -14,6 +14,10 @@
 #ifndef OS_H_
 #define OS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* --------------*
  * Include files *
  * --------------*
@@ -262,5 +266,9 @@ extern os_return_codes_t os_main(void);
  */
 extern os_return_codes_t os_add_function_pointers(
 		os_functions_pointers_t* os_functions);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* OS_H_ */

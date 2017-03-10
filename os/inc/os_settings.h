@@ -14,6 +14,10 @@
 #ifndef LOC_INC_OS_SETTINGS_H_
 #define LOC_INC_OS_SETTINGS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* --------------*
  * Include files *
  * --------------*
@@ -55,6 +59,8 @@
  * ----------------------*
  */
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LOC_INC_OS_SETTINGS_H_ */
