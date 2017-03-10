@@ -34,7 +34,7 @@
  */
 
 /**
- * os return codes
+ * os return codes which are used for some OS functions
  */
 typedef enum {
 	os_failed = -2,				//! Os has failed os should stop working
@@ -48,20 +48,9 @@ typedef enum {
  */
 typedef enum {
 	os_task_succeed, //! The called task is succeed and only needs be to called when necessary
-	os_task_failed,          	//! The called task has failed stop running
+	os_task_failed,          	//! The called task has failed stops running the OS
 	os_task_not_registerd		//!The task is not registered for the event
 } os_task_return_codes_t;
-
-/**
- * Event priorities
- */
-typedef enum {
-	os_msg_priority_high,		//! Message has a high priority
-	os_msg_priority_normal,		//! Message has a normal priority
-	os_msg_priority_low,		//! Message has a low priority
-
-	os_msg_nmbr_of_priorities	//! Value of the number of the priorities
-} os_msg_priority_t;
 
 /**
  * Event where a task can register for
@@ -79,13 +68,15 @@ typedef enum {
 } os_event_t;
 
 /**
- * All possible log levels
+ * Message event priorities
  */
 typedef enum {
-	os_log_level_all,	//! Will be outputed when in all log levels
-	os_log_level_error, //! Will be outputed when error log is active
-	os_log_level_os, //! Will be outputed when os log is active
-} os_log_level_t;
+	os_msg_priority_high,		//! Message has a high priority
+	os_msg_priority_normal,		//! Message has a normal priority
+	os_msg_priority_low,		//! Message has a low priority
+
+	os_msg_nmbr_of_priorities	//! Value of the number of the priorities
+} os_msg_priority_t;
 
 /**
  * An os message object containing a message id and data union field
@@ -94,6 +85,15 @@ typedef struct {
 	uint32_t os_msg_id;	//! Message ID of the message
 	uint32_t data;			//! Data along with the message
 } os_msg_t;
+
+/**
+ * All possible log levels
+ */
+typedef enum {
+	os_log_level_all,	//! Will be outputed when in all log levels
+	os_log_level_error, //! Will be outputed when error log is active
+	os_log_level_os, //! Will be outputed when os log is active
+} os_log_level_t;
 
 /**
  * A task entry, used to register a task
@@ -131,10 +131,6 @@ typedef struct {
 	void (*stdio)(void);
 } os_functions_pointers_t;
 
-/* ---------------------*
- * File-scope variables *
- * ---------------------*
- */
 
 /* ----------------------*
  * Function declarations *
@@ -234,7 +230,7 @@ extern void os_timer_start(os_timer_id_t timer_id);
 #endif /* OS_USE_TIMERS */
 
 /*********************************
- *           OS functions        *
+ *           Log functions        *
  *********************************/
 
 /**
@@ -243,6 +239,10 @@ extern void os_timer_start(os_timer_id_t timer_id);
  * @param fmt
  */
 extern void os_log(os_log_level_t level, const char *fmt, ...);
+
+/*********************************
+ *           OS functions        *
+ *********************************/
 
 /**
  * The os_init function needs to be called before the os main is called
@@ -262,17 +262,5 @@ extern os_return_codes_t os_main(void);
  */
 extern os_return_codes_t os_add_function_pointers(
 		os_functions_pointers_t* os_functions);
-
-#ifdef OS_COOPERATIVE_MULTITASKING
-/**
- * Let the active task sleep for a minimum of sleep_ms the os main function
- * will schedule other tasks when this function is called
- * @param  sleep_ms sleep time in  milliseconds
- * @return          return 0 if sleep is succeed or the number of milliseconds
- *                  to go when interrupt
- */
-extern int os_sleep(uint32_t sleep_ms);
-
-#endif /* OS_COOPERATIVE_MULTITASKING */
 
 #endif /* OS_H_ */
