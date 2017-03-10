@@ -48,6 +48,7 @@ typedef struct {
 
 static os_msg_queue_t os_msg_buffer[os_msg_nmbr_of_priorities];
 static os_msg_queue_entry_t msg_pending;
+
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -142,5 +143,21 @@ int os_post_msg(os_msg_t msg, os_task_id_t dest_task_id,
 	os_queue_add(&os_msg_buffer[prio].queue, &new_entry);
 	//Enable irq
 	os_functions_pointer->enable_irq();
+	return 0;
+}
+
+/**
+ * post event from irq
+ * @param msg
+ * @param dest_task_id
+ * @param prio
+ * @return
+ */
+int os_post_msg_from_irq(os_msg_t msg, os_task_id_t dest_task_id,
+		os_msg_priority_t prio){
+	os_msg_queue_entry_t new_entry;
+	new_entry.msg = msg;
+	new_entry.destination = dest_task_id;
+	os_queue_add(&os_msg_buffer[prio].queue, &new_entry);
 	return 0;
 }

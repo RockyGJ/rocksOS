@@ -18,9 +18,11 @@
  * Include files *
  * --------------*
  */
+
 #include "stdint.h"
 #include "stdbool.h"
 #include "os_settings.h"
+
 /* -------------------------------*
  * Constant and macro definitions *
  * -------------------------------*
@@ -37,8 +39,8 @@
 typedef enum {
 	os_failed = -2,				//! Os has failed os should stop working
 	os_init_failed,				//! Init has failed os should not start
-	os_init_succeed,			//! Init is succsesful os will start
-	os_succesful					//! Return never
+	os_init_succeed,			//! Init is successful os will start
+	os_succesful				//! Return never
 } os_return_codes_t;
 
 /**
@@ -65,7 +67,7 @@ typedef enum {
  * Event where a task can register for
  */
 typedef enum {
-	os_event_msg_pending, //! Message is pending
+	os_event_msg_pending, 		//! Message is pending
 	os_event_init,				//! Os is started and calls each task one time on init
 	os_event_idle,				//! No messages and if activated timer events are pending
 
@@ -86,7 +88,7 @@ typedef enum {
 } os_log_level_t;
 
 /**
- * a os message object containing a message id and data union field
+ * An os message object containing a message id and data union field
  */
 typedef struct {
 	uint32_t os_msg_id;	//! Message ID of the message
@@ -120,7 +122,6 @@ typedef uint16_t os_timer_id_t;
 
 #endif /* OS_USE_TIMERS */
 
-
 /**
  * The functions pointers below must assigned before running main
  */
@@ -134,7 +135,6 @@ typedef struct {
  * File-scope variables *
  * ---------------------*
  */
-
 
 /* ----------------------*
  * Function declarations *
@@ -166,14 +166,13 @@ extern os_task_id_t os_current_task_id(void);
  */
 extern int os_subscribe_for_event(os_event_t event, os_task_id_t task_id);
 
-
 /*********************************
  *      Message functions        *
  *********************************/
 
 /**
- * post a message to another task. The task id of the destination is nevessery
- * to succsesful post the msg
+ * post a message to another task. The task id of the destination is necessary
+ * to successful post the msg
  * @param  msg
  * @param  dest_task_id
  * @param  prio
@@ -183,8 +182,8 @@ extern int os_post_msg(os_msg_t msg, os_task_id_t dest_task_id,
 		os_msg_priority_t prio);
 
 /**
- * post a message to another task. The task id of the destination is nevessery
- * to succsesful post the msg
+ * post a message to another task. The task id of the destination is necessary
+ * to successful post the msg
  *
  * This function is same as post message but cann be called from of the interrupt
  * @param  msg
@@ -211,7 +210,7 @@ extern int os_retrieve_msg(os_msg_t *msg);
 /**
  * Must be called every millisecond to count
  */
-extern void os_timer_count(void) ;
+extern void os_timer_count(void);
 /**
  * Add a timer with default settings. The function will return a unique timer ID which can be used to
  * start or stop the timer
@@ -219,7 +218,8 @@ extern void os_timer_count(void) ;
  * @param timer_type
  * @return
  */
-extern os_timer_id_t os_timer_add(uint32_t timer_value_ms, os_timer_type_t timer_type);
+extern os_timer_id_t os_timer_add(uint32_t timer_value_ms,
+		os_timer_type_t timer_type);
 /**
  * Stop a timer. A timer can be stoped even when not running
  * @param timer_id
@@ -260,7 +260,8 @@ extern os_return_codes_t os_main(void);
  * @param os_functions
  * @return
  */
-extern os_return_codes_t os_add_function_pointers(os_functions_pointers_t* os_functions);
+extern os_return_codes_t os_add_function_pointers(
+		os_functions_pointers_t* os_functions);
 
 #ifdef OS_COOPERATIVE_MULTITASKING
 /**
