@@ -21,7 +21,7 @@
  * 			a status is logged
  *
  */
-#define COMPILE_FOR_LINUX
+//#define COMPILE_FOR_LINUX
 #ifdef COMPILE_FOR_LINUX
 
 #include <stdio.h>
