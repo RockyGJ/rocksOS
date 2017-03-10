@@ -37,9 +37,9 @@
  * os return codes which are used for some OS functions
  */
 typedef enum {
-	os_failed = -2,				//! Os has failed os should stop working
-	os_init_failed,				//! Init has failed os should not start
-	os_init_succeed,			//! Init is successful os will start
+	os_failed = -2,				//! Os has failed OS should stop working
+	os_init_failed,				//! Init has failed OS should not start
+	os_init_succeed,			//! Init is successful OS will start
 	os_succesful				//! Return never
 } os_return_codes_t;
 
