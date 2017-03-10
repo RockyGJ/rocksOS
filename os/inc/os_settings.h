@@ -36,6 +36,7 @@
 
 #ifdef OS_USE_TIMERS
 	#define OS_MAXIMUM_TIMERS	(32)	//! Number of availble timers
+	#define OS_COUNTER_TIME		(10)	//! Every OS_COUNTER_TIME ms the os_timer_count will be called
 #endif /* OS_USE_TIMERS */
 /* -----------------*
  * Type definitions *

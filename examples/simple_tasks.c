@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "os.h"
 
+#include <windows.h>
 os_task_t test_task;
 os_task_t test_task2;
 os_task_return_codes_t test_task_callback(os_event_t event);
@@ -22,6 +23,16 @@ os_functions_pointers_t function_pointers;
 void disable_interrupt(void);
 void enable_interrupt(void);
 void stdio_function(void);
+
+
+void Thread( void* pParams )
+{
+  while ( 1 )
+  {
+	  os_timer_count();
+	  Sleep(10);
+  }
+}
 
 int main(void) {
 
@@ -40,7 +51,8 @@ int main(void) {
 		os_add_task(test_task);
 		os_add_task(test_task2);
 
-
+///Begin thread for 1ms timing
+		 _beginthread( Thread, 0, NULL );
 
 		os_main();
 	return EXIT_SUCCESS;
@@ -61,25 +73,34 @@ void stdio_function(void){
 os_task_return_codes_t test_task_callback(os_event_t event)
 {
 	os_msg_t msg;
+	os_timer_id_t timer;
+
 	switch(event){
 	case os_event_init:
 		os_log(os_log_level_all,"Success from init\n\r");
 		os_subscribe_for_event(os_event_msg_pending, os_current_task_id());
 		msg.os_msg_id = 10;
 		msg.data = 11;
-		os_post_msg(msg, os_current_task_id(), os_msg_priority_normal);
+		timer = os_timer_add(5000,os_timer_repeat);
+		os_timer_start(timer);
+		os_subscribe_for_event(os_event_timer, os_current_task_id());
 		task1 = os_current_task_id();
 		break;
 	case os_event_msg_pending:
 		os_retrieve_msg(&msg);
 		os_log(os_log_level_all,"Success from pending message = %d, %d\n\r",msg.os_msg_id, msg.data);
-		msg.data++;
+		//msg.data++;
+		//os_post_msg(msg, task2, os_msg_priority_normal);
+		break;
+
+	case os_event_timer:
+		os_log(os_log_level_all,"Success from Timer = %d\n\r",os_current_task_id());
 		os_post_msg(msg, task2, os_msg_priority_normal);
 		break;
 	default:
 	break;
 	}
-	os_log(os_log_level_all,"Success from task\n\r");
+	os_log(os_log_level_all,"Success from task %d %d\n\r",os_current_task_id(),event);
 	return os_task_succeed; //Succeed
 }
 
@@ -90,22 +111,22 @@ os_task_return_codes_t test2_task_callback(os_event_t event)
 	case os_event_init:
 		os_log(os_log_level_all,"Success from init\n\r");
 		os_subscribe_for_event(os_event_msg_pending, os_current_task_id());
-		os_subscribe_for_event(os_event_idle, os_current_task_id());
+		//os_subscribe_for_event(os_event_idle, os_current_task_id());
 		task2 = os_current_task_id();
 		break;
 	case os_event_msg_pending:
 		os_retrieve_msg(&msg);
 		os_log(os_log_level_all,"Success from pending message 2 = %d, %d\n\r",msg.os_msg_id, msg.data);
-		msg.data++;
-		os_post_msg(msg, task1, os_msg_priority_normal);
+		//msg.data++;
+		//os_post_msg(msg, task1, os_msg_priority_normal);
 		break;
 	case os_event_idle:
-		os_log(os_log_level_all, "idle from %d\n\r",task2);
+		//os_log(os_log_level_all, "idle from %d\n\r",task2);
 		break;
 	default:
 	break;
 	}
-	os_log(os_log_level_all,"Success from task\n\r");
+	os_log(os_log_level_all,"Success from task %d %d\n\r",os_current_task_id(),event);
 	return os_task_succeed; //Succeed
 }
 

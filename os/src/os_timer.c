@@ -86,10 +86,10 @@ os_return_codes_t os_timer_init(void) {
 }
 
 /**
- * Must be called every millisecond to count
+ * Must be called every OS_COUNTER_TIME to count
  */
 void os_timer_count(void) {
-	os_timer_counter++;
+	os_timer_counter += OS_COUNTER_TIME;
 }
 
 /**
@@ -169,7 +169,7 @@ void os_timer_check_timers(void) {
 		//Check for in use and for started
 		if((os_timers[id].used) && (os_timers[id].start_value > 0)){
 			//Check if timer has occurred
-			if((os_timers[id].start_value + os_timers[id].value) >= os_timer_counter){
+			if(os_timer_counter >= (os_timers[id].start_value + os_timers[id].value)){
 				//Add the timer to the timer queue
 				os_queue_add(&os_timer_pending_queue, &os_timers[id].task_id);
 				if(os_timers[id].type == os_timer_repeat){
