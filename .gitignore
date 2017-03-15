@@ -16,3 +16,4 @@ os/\.settings/language\.settings\.xml
 os/\.settings/org\.eclipse\.cdt\.managedbuilder\.core\.prefs
 hal/.settings/language.settings.xml
 hal/STM32F0DISCOVERY.xml
+os/STM32F0DISCOVERY.xml

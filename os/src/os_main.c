@@ -90,7 +90,7 @@ os_return_codes_t os_init(void) {
  * main function for the os should only return on a error
  * @return
  */
-int os_main(void) {
+os_return_codes_t os_main(void) {
 	static os_task_id_t last_checked_task_id;
 	os_task_id_t task_id;
 	os_task_return_codes_t returnValue;
