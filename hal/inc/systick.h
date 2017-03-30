@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * hal.c                                           (c) 2017 Rocks
+ * systick.h                                           (c) 2017 Rocks
  * -----------------------------------------------------------------------------
  * Author: Gertjan Rocks
  * Web:    www.gertjanrocks.com
@@ -7,22 +7,25 @@
  * -----------------------------------------------------------------------------
  * Description: 
  * -----------------------------------------------------------------------------
- * Created on: 19 mrt. 2017
+ * Created on: 30 mrt. 2017
  * -----------------------------------------------------------------------------
  */
 
+
+#ifndef INC_SYSTICK_H_
+#define INC_SYSTICK_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* --------------*
  * Include files *
  * --------------*
  */
 
-#include "hal.h"
+#include "stdint.h"
 
-//Modules
-#include "systick.h"
-#include "pwm.h"
-#include "gpio.h"
 
 /* -------------------------------*
  * Constant and macro definitions *
@@ -47,20 +50,22 @@
  * ----------------------*
  */
 
-
-/* ----------------------*
- * Function definitions  *
- * ----------------------*
+/**
+ * init the systick hal driver
  */
+extern void systick_init(void);
 
 /**
- * init all hal functions
+ * open the systick with the function used ass callback
+ * @param time_in_ms
+ * @param cbFunction
+ * @return
  */
-void hal_init(void){
-	//Init systick hal layer
-	systick_init();
-	//Init pwm hal layer
-	pwm_init();
-	//Init gpio hal layer
-	gpio_init();
+extern int systick_open(uint16_t time_in_ms, void *cbFunction);
+
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* INC_SYSTICK_H_ */

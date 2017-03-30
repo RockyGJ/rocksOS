@@ -15,14 +15,14 @@
 
 #ifdef STM32F0XX
 
-#include "gpio.h"
-#include "stdint.h"
-#include "stdbool.h"
-
 /* --------------*
  * Include files *
  * --------------*
  */
+
+#include "gpio.h"
+#include "stdint.h"
+#include "stdbool.h"
 
 /* -------------------------------*
  * Constant and macro definitions *

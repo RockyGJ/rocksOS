@@ -15,11 +15,13 @@
 
 #ifdef STM32F0XX
 
-#include "pwm.h"
 /* --------------*
  * Include files *
  * --------------*
  */
+
+#include "pwm.h"
+
 
 /* -------------------------------*
  * Constant and macro definitions *
