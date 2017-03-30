@@ -1,19 +1,19 @@
 /* -----------------------------------------------------------------------------
- * pwm.h                                           (c) 2017 Rocks
+ * gpio.h                                           (c) 2017 Rocks
  * -----------------------------------------------------------------------------
  * Author: Gertjan Rocks
  * Web:    www.gertjanrocks.com
  * Mail:   gertjanrocks@outlook.com
  * -----------------------------------------------------------------------------
- * Description: Global PWM header file used for all control types
+ * Description: 
  * -----------------------------------------------------------------------------
- * Created on: 19 mrt. 2017
+ * Created on: 30 mrt. 2017
  * -----------------------------------------------------------------------------
  */
 
 
-#ifndef PWM_H_
-#define PWM_H_
+#ifndef INC_GPIO_H_
+#define INC_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,14 +23,14 @@ extern "C" {
  * Include files *
  * --------------*
  */
-#include "stdint.h"
+
+#include "stdbool.h"
 
 /* -------------------------------*
  * Constant and macro definitions *
  * -------------------------------*
  */
 
-#define PWM_MAX_DUTYCYLE	(1000)
 
 
 /* -----------------*
@@ -39,10 +39,17 @@ extern "C" {
  */
 
 /**
- * !!! See the device header file which channel is coupled to which output
+ * !!! See the device header file which channel is coupled to which output/input
  */
+typedef uint8_t gpio_pin_t;
 
-typedef uint8_t pwm_channel_t;
+typedef enum{
+	GPIO_MODE_INPUT_NOPULL,
+	GPIO_MODE_INPUT_PULL_UP,
+	GPIO_MODE_INPUT_PULL_DOWN,
+	GPIO_MODE_OUTPUT_PUSH_PULL,
+	GPIO_MODE_OUTPUT_OPEN_DRAIN,
+}gpio_mode_t;
 
 /* ---------------------*
  * File-scope variables *
@@ -56,37 +63,36 @@ typedef uint8_t pwm_channel_t;
  */
 
 /**
- * Init by setting timer settings to zero
+ * init the gpio hal layer
  */
-extern void pwm_init(void);
+extern void gpio_init(void);
 
 /**
- * open a PWM channel with a PWM frequency
- * @param channel
- * @param pwm_freq
- * @return FAULT or OK
- */
-extern int pwm_open(pwm_channel_t channel, uint16_t pwm_freq);
-
-/**
- * Change the frequency of a PWM channel or multiple channels
- * @param channel
- * @param pwm_frequency
+ * open a pin selected in the device config table and the mode
+ * @param gpio_pin
+ * @param mode
  * @return
  */
-extern int pwm_change_frequency(pwm_channel_t channel, uint16_t pwm_frequency);
+extern int gpio_open(gpio_pin_t gpio_pin, gpio_mode_t mode);
 
 /**
- * Change the duty cycle in pre mile
- * @param channel
- * @param dutyCycle 0 - 1000
+ * set a gpio pin with a gpio pin from the pin table in config
+ * @param gpio_pin
+ * @param pinState
  * @return
  */
-extern int pwm_change_dutyCyle(pwm_channel_t channel, uint16_t dutyCycle);
+extern int gpio_set_pin(gpio_pin_t gpio_pin, bool pinState);
 
+/**
+ * Get a gpio pin setting which will be returned in the pinsState pointer
+ * @param gpio_pin
+ * @param pinState
+ * @return
+ */
+extern int gpio_get_pin(gpio_pin_t gpio_pin, bool *pinState);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* PWM_H_ */
+#endif /* INC_GPIO_H_ */

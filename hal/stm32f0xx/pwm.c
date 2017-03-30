@@ -78,12 +78,12 @@ void pwm_init(void) {
  * @param pwm_freq
  * @return FAULT or OK
  */
-int pwm_open(uint8_t channel, uint16_t pwm_freq) {
+int pwm_open(pwm_channel_t channel, uint16_t pwm_freq) {
 	int returnValue = FAULT;
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	//First init the output channel
-	if (device_config.pwm_channel[channel].Port == GPIOA) {
+	if (device_config.pwm_channelConfig[channel].Port == GPIOA) {
 		//Enable the GPIO clock output
 		RCC_AHBPeriphClockCmd( RCC_AHBPeriph_GPIOA, ENABLE);
 		returnValue = OK;
@@ -94,21 +94,21 @@ int pwm_open(uint8_t channel, uint16_t pwm_freq) {
 	//Only continue if clock is set
 	if (returnValue == OK) {
 		//Set the GPIO init struct
-		GPIO_InitStructure.GPIO_Pin = device_config.pwm_channel[channel].Pin;
+		GPIO_InitStructure.GPIO_Pin = device_config.pwm_channelConfig[channel].Pin;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-		GPIO_Init(device_config.pwm_channel[channel].Port, &GPIO_InitStructure);
+		GPIO_Init(device_config.pwm_channelConfig[channel].Port, &GPIO_InitStructure);
 		//Set to alternative function
-		GPIO_PinAFConfig(device_config.pwm_channel[channel].Port,
-				device_config.pwm_channel[channel].Pin_Source,
-				device_config.pwm_channel[channel].Alternative_Function);
+		GPIO_PinAFConfig(device_config.pwm_channelConfig[channel].Port,
+				device_config.pwm_channelConfig[channel].Pin_Source,
+				device_config.pwm_channelConfig[channel].Alternative_Function);
 	}
 
 	//Set clock settings
 	if (returnValue == OK) {
-		if (device_config.pwm_channel[channel].Timer == TIM1) {
+		if (device_config.pwm_channelConfig[channel].Timer == TIM1) {
 			// TIM1 clock enable
 			RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 			returnValue = OK;
@@ -133,14 +133,14 @@ int pwm_open(uint8_t channel, uint16_t pwm_freq) {
  * @param pwm_frequency
  * @return
  */
-int pwm_change_frequency(uint8_t channel, uint16_t pwm_frequency) {
+int pwm_change_frequency(pwm_channel_t channel, uint16_t pwm_frequency) {
 	int returnValue = FAULT;
 	TIM_TypeDef *pTimer;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	uint8_t timer_setting_index;
 
 	//Get the timer pointer
-	pTimer = device_config.pwm_channel[channel].Timer;
+	pTimer = device_config.pwm_channelConfig[channel].Timer;
 
 	//Select timer setting index
 	if (pTimer == TIM1) {
@@ -182,7 +182,7 @@ int pwm_change_frequency(uint8_t channel, uint16_t pwm_frequency) {
  * @param dutyCycle 0 - 1000
  * @return
  */
-int pwm_change_dutyCyle(uint8_t channel, uint16_t dutyCycle) {
+int pwm_change_dutyCyle(pwm_channel_t channel, uint16_t dutyCycle) {
 	int returnValue = FAULT;
 	TIM_TypeDef *pTimer;
 	TIM_OCInitTypeDef TIM_OCInitStructure;
@@ -190,7 +190,7 @@ int pwm_change_dutyCyle(uint8_t channel, uint16_t dutyCycle) {
 	uint8_t timer_setting_index;
 
 	//Get the timer pointer
-	pTimer = device_config.pwm_channel[channel].Timer;
+	pTimer = device_config.pwm_channelConfig[channel].Timer;
 
 	//Select timer setting index
 	if (pTimer == TIM1) {
@@ -223,7 +223,7 @@ int pwm_change_dutyCyle(uint8_t channel, uint16_t dutyCycle) {
 				/ PWM_MAX_DUTYCYLE);
 
 		TIM_OCInitStructure.TIM_Pulse = ChannelPulse;
-		switch (device_config.pwm_channel[channel].Timer_Channel) {
+		switch (device_config.pwm_channelConfig[channel].Timer_Channel) {
 		case 1:
 			TIM_OC1Init(pTimer, &TIM_OCInitStructure);
 			break;

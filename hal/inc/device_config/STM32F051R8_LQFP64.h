@@ -36,8 +36,7 @@ extern "C" {
  * PWM Settings
  */
 #define PWM_CHANNELS				(4)
-//#define	PWM_FIRST_TIMER				(TIM1)
-//#define PWM_CHANNELS_ON_FIRST_TIMER	(4)
+
 /**
  * one pwm channel
  */
@@ -48,13 +47,30 @@ typedef struct{
 	uint8_t				Alternative_Function;
 	TIM_TypeDef 		*Timer;
 	uint8_t				Timer_Channel;
-}pwm_channel_t;
+}pwm_channel_config_t;
+
+
+/**
+ * GPIO Settings
+ */
+#define GPIO_PINS					(5)
+
+/**
+ * one gpio pin
+ */
+typedef struct{
+	uint16_t 			Pin;
+	GPIO_TypeDef		*Port;
+	GPIOSpeed_TypeDef	Speed_Level;
+}gpio_pin_config_t	;
+
 
 /**
  * Device config structure
  */
 typedef struct{
-	pwm_channel_t pwm_channel[PWM_CHANNELS];
+	pwm_channel_config_t 	pwm_channelConfig[PWM_CHANNELS];
+	gpio_pin_config_t		gpio_pinConfig[GPIO_PINS];
 }device_config_t;
 
 /**
@@ -64,10 +80,18 @@ typedef struct{
 const device_config_t device_config = {
 /** PWM Channel configuration **/
 	{//		Pin,			Port,	Pin_Source, 		Alternative_Function, T	imer,	Timer_Channel
-		{	GPIO_Pin_8,		GPIOA,	GPIO_PinSource8,	GPIO_AF_2,				TIM1,	1	},
-		{	GPIO_Pin_9,		GPIOA,	GPIO_PinSource9,	GPIO_AF_2,				TIM1,	2	},
-		{	GPIO_Pin_10,	GPIOA,	GPIO_PinSource10,	GPIO_AF_2,				TIM1,	3	},
-		{	GPIO_Pin_11,	GPIOA,	GPIO_PinSource11,	GPIO_AF_2,				TIM1,	4	}
+ /*0*/	{	GPIO_Pin_8,		GPIOA,	GPIO_PinSource8,	GPIO_AF_2,				TIM1,	1	},
+ /*1*/	{	GPIO_Pin_9,		GPIOA,	GPIO_PinSource9,	GPIO_AF_2,				TIM1,	2	},
+ /*2*/	{	GPIO_Pin_10,	GPIOA,	GPIO_PinSource10,	GPIO_AF_2,				TIM1,	3	},
+ /*3*/	{	GPIO_Pin_11,	GPIOA,	GPIO_PinSource11,	GPIO_AF_2,				TIM1,	4	}
+	},
+/** GPIO pinnen configuration **/
+	{//		Pin,			Port,	Speed_Level
+ /*0*/	{	GPIO_Pin_1,		GPIOA,	GPIO_Speed_Level_3},
+ /*1*/	{	GPIO_Pin_2,		GPIOA,	GPIO_Speed_Level_3},
+ /*2*/	{	GPIO_Pin_3,		GPIOA,	GPIO_Speed_Level_3},
+ /*3*/	{	GPIO_Pin_4,		GPIOA,	GPIO_Speed_Level_3},
+ /*4*/	{	GPIO_Pin_5,		GPIOA,	GPIO_Speed_Level_3},
 	}
 };
 

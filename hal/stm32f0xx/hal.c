@@ -21,6 +21,7 @@
 
 //Modules
 #include "pwm.h"
+#include "gpio.h"
 
 /* -------------------------------*
  * Constant and macro definitions *
@@ -57,4 +58,6 @@
 void hal_init(void){
 	//Init pwm hal layer
 	pwm_init();
+	//Init gpio hal layer
+	gpio_init();
 }
