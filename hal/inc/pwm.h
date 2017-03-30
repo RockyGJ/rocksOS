@@ -23,7 +23,7 @@ extern "C" {
  * Include files *
  * --------------*
  */
-
+#include "stdint.h"
 
 /* -------------------------------*
  * Constant and macro definitions *
@@ -50,7 +50,34 @@ extern "C" {
  * ----------------------*
  */
 
-int pwm_change_frequency(uint8_t channel, uint16_t pwm_frequency);
+/**
+ * Init by setting timer settings to zero
+ */
+extern void pwm_init(void);
+
+/**
+ * open a PWM channel with a PWM frequency
+ * @param channel
+ * @param pwm_freq
+ * @return FAULT or OK
+ */
+extern int pwm_open(uint8_t channel, uint16_t pwm_freq);
+
+/**
+ * Change the frequency of a PWM channel or multiple channels
+ * @param channel
+ * @param pwm_frequency
+ * @return
+ */
+extern int pwm_change_frequency(uint8_t channel, uint16_t pwm_frequency);
+
+/**
+ * Change the duty cycle in pre mile
+ * @param channel
+ * @param dutyCycle 0 - 1000
+ * @return
+ */
+extern int pwm_change_dutyCyle(uint8_t channel, uint16_t dutyCycle);
 
 
 #ifdef __cplusplus
