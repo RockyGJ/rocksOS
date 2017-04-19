@@ -52,7 +52,7 @@ typedef enum {
  */
 typedef enum {
 	os_task_succeed, //! The called task is succeed and only needs be to called when necessary
-	os_task_failed,          	//! The called task has failed stops running the OS
+	os_task_failed,          //! The called task has failed stops running the OS
 	os_task_not_registerd		//!The task is not registered for the event
 } os_task_return_codes_t;
 
@@ -61,8 +61,8 @@ typedef enum {
  */
 typedef enum {
 	os_event_msg_pending, 		//! Message is pending
-	os_event_init,				//! Os is started and calls each task one time on init
-	os_event_idle,				//! No messages and if activated timer events are pending
+	os_event_init,		//! Os is started and calls each task one time on init
+	os_event_idle,	//! No messages and if activated timer events are pending
 
 #ifdef OS_USE_TIMERS
 	os_event_timer,
@@ -103,8 +103,9 @@ typedef enum {
  * A task entry, used to register a task
  */
 typedef struct {
-	const char* task_name;
-	os_task_return_codes_t (*task_cb)(os_event_t);
+	const char* task_name;	//! Task name
+	os_task_return_codes_t (*task_cb)(os_event_t); //! Callback function for the task
+	uint32_t identifier; //! User identifier, is not used by the os. Can be changed and read during a running os
 } os_task_t;
 
 typedef uint16_t os_task_id_t;  //! The task id assigned to a tasks
@@ -135,7 +136,6 @@ typedef struct {
 	void (*stdio)(void);
 } os_functions_pointers_t;
 
-
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -165,6 +165,24 @@ extern os_task_id_t os_current_task_id(void);
  * @return         returns 0 if it was not possible to register for the event
  */
 extern int os_subscribe_for_event(os_event_t event, os_task_id_t task_id);
+
+/**
+ * Add an user identifier to a task. This may be used to identify a task between the
+ * initializing and running task. This is not necessary for running a task and
+ * is not monitored or controlled by the os!
+ * @param task_id
+ * @param identifier
+ * @return 0 if successful and -1 if unsuccessful
+ */
+extern int os_set_task_identifier(os_task_id_t task_id, uint32_t identifier);
+
+/**
+ * Get the identifier set by the user
+ * @param task_id
+ * @param identifier
+ * @return 0 if successful and -1 if unsuccessful
+ */
+extern int os_get_task_identifier(os_task_id_t task_id, uint32_t* identifier);
 
 /*********************************
  *      Message functions        *

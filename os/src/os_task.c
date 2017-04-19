@@ -70,6 +70,7 @@ os_return_codes_t os_task_init(void) {
 		for (os_event_t event = 0; event < os_nmbr_of_events; event++) {
 			os_task_admin[task].event_subscribe[event] = false;
 		}
+		os_task_admin[task].task.identifier = 0;
 	}
 	//Clear the variable
 	os_latest_added_task = 0;
@@ -149,4 +150,44 @@ os_task_return_codes_t os_run_task(os_task_id_t task_id, os_event_t event) {
  */
 os_task_id_t os_nmbr_of_tasks(void){
 	return os_latest_added_task;
+}
+
+/**
+ * Add an user identifier to a task. This may be used to identify a task between the
+ * initializing and running task. This is not necessary for running a task and
+ * is not monitored or controlled by the os!
+ * @param task_id
+ * @param identifier
+ * @return 0 if successful and -1 if unsuccessful
+ */
+int os_set_task_identifier(os_task_id_t task_id, uint32_t identifier)
+{
+	if(task_id != os_task_admin[task_id].this){
+		//Set the identifier
+		os_task_admin[task_id].task.identifier = identifier;
+		//Everything went fine so return 0
+		return 0;
+	} else {
+		//Error on finding the right task
+		return -1;
+	}
+}
+
+/**
+ * Get the identifier set by the user
+ * @param task_id
+ * @param identifier
+ * @return 0 if successful and -1 if unsuccessful
+ */
+int os_get_task_identifier(os_task_id_t task_id, uint32_t* identifier)
+{
+	if(task_id != os_task_admin[task_id].this){
+		//Get the identifier
+		*identifier = os_task_admin[task_id].task.identifier;
+		//Everything went fine so return 0
+		return 0;
+	} else {
+		//Error on finding the right task
+		return -1;
+	}
 }
