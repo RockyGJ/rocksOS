@@ -229,6 +229,7 @@ extern int os_retrieve_msg(os_msg_t *msg);
  * Must be called every millisecond to count
  */
 extern void os_timer_count(void);
+
 /**
  * Add a timer with default settings. The function will return a unique timer ID which can be used to
  * start or stop the timer
@@ -238,16 +239,25 @@ extern void os_timer_count(void);
  */
 extern os_timer_id_t os_timer_add(uint32_t timer_value_ms,
 		os_timer_type_t timer_type);
+
 /**
  * Stop a timer. A timer can be stoped even when not running
  * @param timer_id
  */
 extern void os_timer_stop(os_timer_id_t timer_id);
+
 /**
  * Start or restart the timer
  * @param timer_id
  */
 extern void os_timer_start(os_timer_id_t timer_id);
+
+/**
+ * Set a new timer value. This is only possible when the timer is stopped
+ * @param timer_id
+ * @param timer_value_ms
+ */
+extern void os_timer_new_value(os_timer_id_t timer_id, uint32_t timer_value_ms);
 
 #endif /* OS_USE_TIMERS */
 
