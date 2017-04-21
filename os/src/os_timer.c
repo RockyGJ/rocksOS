@@ -198,4 +198,13 @@ os_task_id_t os_timer_pending(void) {
 	return pending_task;
 }
 
+/**
+ * This function will return the counter setting in ms which needs to be used
+ * to initialize the calling counter for os_timer_count();
+ * @return
+ */
+uint16_t os_timer_counter_step_setting(void){
+	return OS_COUNTER_TIME;
+}
+
 #endif /* OS_USE_TIMERS */

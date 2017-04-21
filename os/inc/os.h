@@ -259,6 +259,13 @@ extern void os_timer_start(os_timer_id_t timer_id);
  */
 extern void os_timer_new_value(os_timer_id_t timer_id, uint32_t timer_value_ms);
 
+/**
+ * This function will return the counter setting in ms which needs to be used
+ * to initialize the calling counter for os_timer_count();
+ * @return
+ */
+extern uint16_t os_timer_counter_step_setting(void);
+
 #endif /* OS_USE_TIMERS */
 
 /*********************************
