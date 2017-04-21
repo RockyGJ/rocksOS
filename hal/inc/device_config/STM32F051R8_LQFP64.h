@@ -77,7 +77,7 @@ typedef struct{
  * Default config table
  */
 
-const device_config_t device_config = {
+static const device_config_t device_config = {
 /** PWM Channel configuration **/
 	{//		Pin,			Port,	Pin_Source, 		Alternative_Function, T	imer,	Timer_Channel
  /*0*/	{	GPIO_Pin_8,		GPIOA,	GPIO_PinSource8,	GPIO_AF_2,				TIM1,	1	},
