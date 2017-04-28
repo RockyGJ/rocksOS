@@ -162,7 +162,7 @@ os_task_id_t os_nmbr_of_tasks(void){
  */
 int os_set_task_identifier(os_task_id_t task_id, uint32_t identifier)
 {
-	if(task_id != os_task_admin[task_id].this){
+	if(task_id == os_task_admin[task_id].this){
 		//Set the identifier
 		os_task_admin[task_id].task.identifier = identifier;
 		//Everything went fine so return 0
@@ -181,7 +181,7 @@ int os_set_task_identifier(os_task_id_t task_id, uint32_t identifier)
  */
 int os_get_task_identifier(os_task_id_t task_id, uint32_t* identifier)
 {
-	if(task_id != os_task_admin[task_id].this){
+	if(task_id == os_task_admin[task_id].this){
 		//Get the identifier
 		*identifier = os_task_admin[task_id].task.identifier;
 		//Everything went fine so return 0

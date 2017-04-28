@@ -75,6 +75,10 @@ int gpio_open(gpio_pin_t gpio_pin, gpio_mode_t mode) {
 		//Enable the GPIO clock
 		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 		returnValue = OK;
+	} else if (device_config.gpio_pinConfig[gpio_pin].Port == GPIOC) {
+		//Enable the GPIO clock
+		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+		returnValue = OK;
 	} else {
 		returnValue = FAULT;
 	}
