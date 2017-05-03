@@ -53,7 +53,7 @@ typedef struct{
 /**
  * GPIO Settings
  */
-#define GPIO_PINS					(7)
+#define GPIO_PINS					(11)
 
 /**
  * one gpio pin
@@ -92,8 +92,12 @@ static const device_config_t device_config = {
  /*2*/	{	GPIO_Pin_3,		GPIOA,	GPIO_Speed_Level_3},
  /*3*/	{	GPIO_Pin_4,		GPIOA,	GPIO_Speed_Level_3},
  /*4*/	{	GPIO_Pin_5,		GPIOA,	GPIO_Speed_Level_3},
- /*5*/ 	{ 	GPIO_Pin_8,		GPIOC,	GPIO_Speed_Level_3},
- /*6*/ 	{ 	GPIO_Pin_9,		GPIOC,	GPIO_Speed_Level_3},
+ /*5*/ 	{ 	GPIO_Pin_6,		GPIOC,	GPIO_Speed_Level_3},
+ /*6*/ 	{ 	GPIO_Pin_7,		GPIOC,	GPIO_Speed_Level_3},
+ /*7*/ 	{ 	GPIO_Pin_8,		GPIOC,	GPIO_Speed_Level_3},
+ /*8*/ 	{ 	GPIO_Pin_9,		GPIOC,	GPIO_Speed_Level_3},
+ /*9*/ 	{ 	GPIO_Pin_6,		GPIOF,	GPIO_Speed_Level_3},
+ /*10*/	{ 	GPIO_Pin_7,		GPIOF,	GPIO_Speed_Level_3},
 	}
 };
 

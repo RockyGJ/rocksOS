@@ -210,10 +210,10 @@ int pwm_change_dutyCyle(pwm_channel_t channel, uint16_t dutyCycle) {
 		// TIM Main Output Disable
 		TIM_CtrlPWMOutputs(pTimer, DISABLE);
 
-		//Configure the channel for pmm mode
-		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+		//Configure the channel for pmw mode
+		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-		TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+		TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
 		TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
 		TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
 		TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
