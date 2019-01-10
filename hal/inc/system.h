@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * hal.c                                           (c) 2017 Rocks
+ * system.h                                           (c) 2017 Rocks
  * -----------------------------------------------------------------------------
  * Author: Gertjan Rocks
  * Web:    www.gertjanrocks.com
@@ -12,20 +12,18 @@
  */
 
 
+#ifndef INC_SYSTEM_H_
+#define INC_SYSTEM_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* --------------*
  * Include files *
  * --------------*
  */
 
-#include "device.h"
-
-#ifdef STM32F0XX
-#include "hal.h"
-
-//Modules
-#include "systick.h"
-#include "pwm.h"
-#include "gpio.h"
 
 /* -------------------------------*
  * Constant and macro definitions *
@@ -50,21 +48,10 @@
  * ----------------------*
  */
 
+extern void system_init(void);
 
-/* ----------------------*
- * Function definitions  *
- * ----------------------*
- */
-
-/**
- * init all hal functions
- */
-void hal_init(void){
-	//Init systick hal layer
-	systick_init();
-	//Init pwm hal layer
-	pwm_init();
-	//Init gpio hal layer
-	gpio_init();
+#ifdef __cplusplus
 }
-#endif /* STM32F0XX */
+#endif
+
+#endif /* INC_SYSTEM_H_ */

@@ -19,10 +19,11 @@
 
 #include "device.h"
 
-#ifdef STM32F0XX
+#ifdef LPC1769
 #include "hal.h"
 
 //Modules
+#include "system.h"
 #include "systick.h"
 #include "pwm.h"
 #include "gpio.h"
@@ -31,7 +32,6 @@
  * Constant and macro definitions *
  * -------------------------------*
  */
-
 
 /* -----------------*
  * Type definitions *
@@ -50,7 +50,6 @@
  * ----------------------*
  */
 
-
 /* ----------------------*
  * Function definitions  *
  * ----------------------*
@@ -60,11 +59,15 @@
  * init all hal functions
  */
 void hal_init(void){
+	//Init LPC1769 clocking and power
+	system_init();
 	//Init systick hal layer
 	systick_init();
 	//Init pwm hal layer
-	pwm_init();
+//	pwm_init();
 	//Init gpio hal layer
-	gpio_init();
+//	gpio_init();
 }
-#endif /* STM32F0XX */
+
+
+#endif /* LPC1769 */

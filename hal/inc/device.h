@@ -22,8 +22,8 @@
 
 //Only select one!
 
-#define STM32F0XX
-//#define LPC82X
+//#define STM32F0XX
+#define LPC1769
 
 
 
@@ -35,18 +35,21 @@
 #include "STM32F051R8_LQFP64.h"
 #endif
 
+#ifdef LPC1769
+#include "LPC1769_LPCxpresso.h"
+#endif
 /**
  * Check the selection pre-compile
  */
 
 //Check on multiple checked
-#if defined(STM32F0XX) && defined(LPC82X)
+#if defined(STM32F0XX) && defined(LPC1769)
 #error "Multiple devices defined in the hal"
 #endif
 
 
 //Check on non selected
-#if !defined(STM32F0XX) && !defined(LPC82X)
+#if !defined(STM32F0XX) && !defined(LPC1769)
 #error "None device is defined in hal"
 #endif
 
