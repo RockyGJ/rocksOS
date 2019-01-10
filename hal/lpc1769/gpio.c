@@ -13,7 +13,7 @@
 
 #include "device.h"
 
-#ifdef LPC17f69
+#ifdef LPC1769
 
 /* --------------*
  * Include files *
@@ -43,6 +43,8 @@ enum {
  * ---------------------*
  */
 
+static bool global_gpio_init = false;
+
 /* ----------------------*
  * Function declarations *
  * ----------------------*
@@ -68,64 +70,49 @@ void gpio_init(void) {
  */
 int gpio_open(gpio_pin_t gpio_pin, gpio_mode_t mode) {
 	int returnValue = OK;
-	GPIO_InitTypeDef GPIO_InitStructure;
 
-	//First enable the GPIO clock
-	if (device_config.gpio_pinConfig[gpio_pin].Port == GPIOA) {
-		//Enable the GPIO clock
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-		returnValue = OK;
-	} else if (device_config.gpio_pinConfig[gpio_pin].Port == GPIOC) {
-		//Enable the GPIO clock
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
-		returnValue = OK;
-	} else if (device_config.gpio_pinConfig[gpio_pin].Port == GPIOF) {
-		//Enable the GPIO clock
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF, ENABLE);
-		returnValue = OK;
-	} else {
-		returnValue = FAULT;
+	//Init points which has to be init only once
+	if(!global_gpio_init){
+		//Enable overal GPIO clock
+		Chip_GPIO_Init(LPC_GPIO);
+		global_gpio_init = true;
 	}
 
 	//If the clock settings are valid enable the pin
 	if (returnValue == OK) {
-
-		//First set the Pin en Speed level
-		GPIO_InitStructure.GPIO_Pin =
-				device_config.gpio_pinConfig[gpio_pin].Pin;
-		GPIO_InitStructure.GPIO_Speed =
-				device_config.gpio_pinConfig[gpio_pin].Speed_Level;
 		//Use the mode to select In/Out PushPull and pulls up
 		switch (mode) {
 		case GPIO_MODE_INPUT_NOPULL:
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-			//Set output type which will not be used but not leave empty
-			GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-			GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+			Chip_IOCON_PinMux(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin, IOCON_MODE_INACT,IOCON_FUNC0);
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
 			break;
 		case GPIO_MODE_INPUT_PULL_UP:
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-			//Set output type which will not be used but not leave empty
-			GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-			GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+			Chip_IOCON_PinMux(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin, IOCON_MODE_PULLUP,IOCON_FUNC0);
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
 			break;
 		case GPIO_MODE_INPUT_PULL_DOWN:
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-			//Set output type which will not be used but not leave empty
-			GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-			GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+			Chip_IOCON_PinMux(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin, IOCON_MODE_PULLDOWN,IOCON_FUNC0);
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
 			break;
 		case GPIO_MODE_OUTPUT_PUSH_PULL:
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-			GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-			//Set puPds which will not be used but not leave empty
-			GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+			Chip_IOCON_PinMux(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin, IOCON_MODE_INACT,IOCON_FUNC0);
+			Chip_GPIO_SetPinDIROutput(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
 			break;
 		case GPIO_MODE_OUTPUT_OPEN_DRAIN:
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-			GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-			//Set puPds which will not be used but not leave empty
-			GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+			Chip_IOCON_PinMux(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin, IOCON_MODE_INACT,IOCON_FUNC0);
+			Chip_IOCON_EnableOD(LPC_IOCON,device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
+			Chip_GPIO_SetPinDIROutput(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+										device_config.gpio_pinConfig[gpio_pin].Pin);
 			break;
 		default:
 			//Unknown value
@@ -133,8 +120,6 @@ int gpio_open(gpio_pin_t gpio_pin, gpio_mode_t mode) {
 			break;
 		}
 		//Configure the pin
-		GPIO_Init(device_config.gpio_pinConfig[gpio_pin].Port,
-				&GPIO_InitStructure);
 	}
 	return returnValue;
 }
@@ -149,11 +134,11 @@ int gpio_set_pin(gpio_pin_t gpio_pin, bool pinState) {
 	int returnValue = OK;
 	//check if bitstate must be set or reset
 	if (pinState) {
-		GPIO_WriteBit(device_config.gpio_pinConfig[gpio_pin].Port,
-				device_config.gpio_pinConfig[gpio_pin].Pin, Bit_SET);
+		Chip_GPIO_WritePortBit(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+				device_config.gpio_pinConfig[gpio_pin].Pin, true);
 	} else {
-		GPIO_WriteBit(device_config.gpio_pinConfig[gpio_pin].Port,
-				device_config.gpio_pinConfig[gpio_pin].Pin, Bit_RESET);
+		Chip_GPIO_WritePortBit(LPC_GPIO, device_config.gpio_pinConfig[gpio_pin].Port,
+				device_config.gpio_pinConfig[gpio_pin].Pin, false);
 	}
 	return returnValue;
 }
@@ -166,22 +151,12 @@ int gpio_set_pin(gpio_pin_t gpio_pin, bool pinState) {
  */
 int gpio_get_pin(gpio_pin_t gpio_pin, bool *pinState) {
 	int returnValue = OK;
-	BitAction readBit;
-
 	//Read out the bitAction
-	readBit = (BitAction) GPIO_ReadInputDataBit(
+	*pinState = Chip_GPIO_ReadPortBit(LPC_GPIO,
 			device_config.gpio_pinConfig[gpio_pin].Port,
 			device_config.gpio_pinConfig[gpio_pin].Pin);
 	//If bit is set set pinstate to true otherwist to false
-	if (readBit == Bit_SET) {
-		*pinState = true;
-	} else if (readBit == Bit_RESET) {
-		*pinState = false;
-	} else {
-		returnValue = FAULT;
-	}
-
 	return returnValue;
 }
 
-#endif /* STM32F0XX */
+#endif /* LPC1769 */

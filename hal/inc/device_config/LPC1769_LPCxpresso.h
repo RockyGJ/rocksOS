@@ -52,31 +52,31 @@ extern "C" {
 /**
  * GPIO Settings
  */
-#define GPIO_PINS					(11)
+#define GPIO_PINS					(1)
 
 /**
  * one gpio pin
  */
-//typedef struct{
-//	uint16_t 			Pin;
-//	GPIO_TypeDef		*Port;
+typedef struct{
+	uint8_t 			Pin;
+	uint32_t			Port;
 //	GPIOSpeed_TypeDef	Speed_Level;
-//}gpio_pin_config_t	;
+}gpio_pin_config_t	;
 
 
 /**
  * Device config structure
  */
-//typedef struct{
+typedef struct{
 //	pwm_channel_config_t 	pwm_channelConfig[PWM_CHANNELS];
-//	gpio_pin_config_t		gpio_pinConfig[GPIO_PINS];
-//}device_config_t;
+	gpio_pin_config_t		gpio_pinConfig[GPIO_PINS];
+}device_config_t;
 
 /**
  * Default config table
  */
 
-//static const device_config_t device_config = {
+static const device_config_t device_config = {
 ///** PWM Channel configuration **/
 //	{//		Pin,			Port,	Pin_Source, 		Alternative_Function, T	imer,	Timer_Channel
 // /*0*/	{	GPIO_Pin_8,		GPIOA,	GPIO_PinSource8,	GPIO_AF_2,				TIM1,	1	},
@@ -84,21 +84,12 @@ extern "C" {
 // /*2*/	{	GPIO_Pin_10,	GPIOA,	GPIO_PinSource10,	GPIO_AF_2,				TIM1,	3	},
 // /*3*/	{	GPIO_Pin_11,	GPIOA,	GPIO_PinSource11,	GPIO_AF_2,				TIM1,	4	}
 //	},
-///** GPIO pinnen configuration **/
-//	{//		Pin,			Port,	Speed_Level
-// /*0*/	{	GPIO_Pin_1,		GPIOA,	GPIO_Speed_Level_3},
-// /*1*/	{	GPIO_Pin_2,		GPIOA,	GPIO_Speed_Level_3},
-// /*2*/	{	GPIO_Pin_3,		GPIOA,	GPIO_Speed_Level_3},
-// /*3*/	{	GPIO_Pin_4,		GPIOA,	GPIO_Speed_Level_3},
-// /*4*/	{	GPIO_Pin_5,		GPIOA,	GPIO_Speed_Level_3},
-// /*5*/ 	{ 	GPIO_Pin_6,		GPIOC,	GPIO_Speed_Level_3},
-// /*6*/ 	{ 	GPIO_Pin_7,		GPIOC,	GPIO_Speed_Level_3},
-// /*7*/ 	{ 	GPIO_Pin_8,		GPIOC,	GPIO_Speed_Level_3},
-// /*8*/ 	{ 	GPIO_Pin_9,		GPIOC,	GPIO_Speed_Level_3},
-// /*9*/ 	{ 	GPIO_Pin_6,		GPIOF,	GPIO_Speed_Level_3},
-// /*10*/	{ 	GPIO_Pin_7,		GPIOF,	GPIO_Speed_Level_3},
-//	}
-//};
+/** GPIO pinnen configuration **/
+	{//		Pin,	Port,	Speed_Level
+ /*0*/	{	22,		0,		0},
+ ///*1*/	{	23,		0,	GPIO_Speed_Level_3},
+	}
+};
 
 #ifdef __cplusplus
 }
