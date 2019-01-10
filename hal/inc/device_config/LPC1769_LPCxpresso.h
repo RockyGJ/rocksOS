@@ -30,6 +30,11 @@ extern "C" {
 //LPC includes
 #include "chip.h"
 
+#ifdef __USE_CMSIS
+#include "LPC17xx.h"
+#endif
+
+#include <cr_section_macros.h>
 
 /**
  * PWM Settings
